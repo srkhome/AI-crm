@@ -1,0 +1,44 @@
+function calculateRent() {
+            const pingInput = document.getElementById('rent-ping').value;
+            if (!pingInput || pingInput <= 0) {
+                showToast('請輸入有效的權狀坪數');
+                return;
+            }
+
+            const area = document.getElementById('rent-area').value;
+            const typeElement = document.querySelector('input[name="room-type"]:checked');
+            const type = typeElement ? typeElement.value : 'non-suite';
+            const age = document.getElementById('rent-age').value;
+            const ping = parseFloat(pingInput);
+
+            // 計算設備加分
+            const equipments = document.querySelectorAll('input[name="equipment"]:checked');
+            let equipmentBonus = equipments.length * 500;
+            const maxBonus = type === 'suite' ? 1000 : 2000;
+            equipmentBonus = Math.min(equipmentBonus, maxBonus);
+
+            const currentTable = type === 'suite' ? suiteTable : nonSuiteTable;
+
+            let unitPrice = 800; 
+            if (currentTable[area]) {
+                const ageIndex = ageMapping[age];
+                if (ageIndex !== undefined && currentTable[area][ageIndex]) {
+                    unitPrice = currentTable[area][ageIndex];
+                }
+            }
+
+            const estimatedRent = ping * unitPrice;
+            const maxRent = estimatedRent * 0.9 + equipmentBonus;
+            
+            const resultElement = document.getElementById('res-rent-range');
+            
+            if (maxRent > 35000) {
+                resultElement.textContent = `建議租金 ${Math.round(maxRent).toLocaleString()} 元 (超過35,000元，可能不符包租代管資格)`;
+                resultElement.className = "text-lg font-bold text-red-600 mb-2 leading-tight";
+            } else {
+                resultElement.textContent = `建議最高租金：${Math.round(maxRent).toLocaleString()} 元`;
+                resultElement.className = "text-2xl font-bold text-blue-600 mb-2";
+            }
+
+            document.getElementById('rent-result-area').classList.remove('hidden');
+        }
