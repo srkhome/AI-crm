@@ -9,227 +9,132 @@
         .accordion-content { transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out; max-height: 0; opacity: 0; overflow: hidden; }
         .accordion-content.active { max-height: 2000px; opacity: 1; }
         .rotate-180 { transform: rotate(180deg); }
-        #toast { transition: opacity 0.3s, transform 0.3s; transform: translateY(20px); }
-        #toast.show { opacity: 1; transform: translateY(0); }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen font-sans text-gray-800 flex flex-col relative">
+<body class="bg-gray-50 min-h-screen font-sans text-gray-800">
 
-    <header class="bg-blue-600 text-white shadow-md relative overflow-hidden">
-        <div class="max-w-3xl mx-auto px-4 py-6 text-center relative z-10">
-            <h1 class="text-2xl font-bold">總管家包租代管</h1>
-            <p class="text-blue-100 mt-1">社會住宅完整客服問答</p>
-            <div class="mt-4 inline-flex items-center gap-1 bg-blue-800/40 border border-blue-400/50 text-white text-sm px-4 py-1.5 rounded-full font-medium tracking-wide">
-                本網站內容與試算服務以「台中市」為主
-            </div>
-        </div>
+    <header class="bg-blue-600 text-white shadow-md py-6 text-center">
+        <h1 class="text-2xl font-bold">總管家包租代管</h1>
+        <p class="text-blue-100 text-sm mt-1">社會住宅完整客服問答</p>
     </header>
 
     <main class="flex-grow max-w-3xl mx-auto w-full px-4 py-8">
-        <!-- 首頁 -->
-        <div id="view-home" class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8 text-center transition-all duration-300">
-            <div class="bg-blue-50 text-blue-800 p-4 rounded-lg mb-8 text-left leading-relaxed">
-                您好！這裡是總管家包租代管，很高興為您服務。請問您今天是想了解「房東出租」還是「找租屋」呢？不用擔心政策複雜，有任何問題我都會慢慢跟您說明喔！
-            </div>
+        <!-- Home -->
+        <div id="view-home" class="bg-white rounded-xl shadow-sm p-8 text-center">
+            <div class="bg-blue-50 text-blue-800 p-4 rounded-lg mb-6 text-left text-sm">您好！這裡是總管家包租代管，很高興為您服務。請問您今天是想了解「房東出租」還是「找租屋」呢？</div>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <button onclick="showView('landlord')" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg shadow transition transform hover:-translate-y-1">🏠 我是房東 (了解出租)</button>
-                <button onclick="showView('tenant')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-6 rounded-lg shadow transition transform hover:-translate-y-1">🔑 我是房客 (尋找租屋)</button>
+                <button onclick="showView('landlord')" class="flex-1 bg-blue-600 text-white font-bold py-4 rounded-lg">🏠 我是房東</button>
+                <button onclick="showView('tenant')" class="flex-1 bg-emerald-600 text-white font-bold py-4 rounded-lg">🔑 我是房客</button>
             </div>
         </div>
 
-        <!-- 房東專區 -->
-        <div id="view-landlord" class="hidden flex-col gap-4 transition-all duration-300">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-2xl font-bold text-blue-800">🏠 房東專區</h2>
-                <button onclick="showView('home')" class="text-gray-500 hover:text-blue-600 underline text-sm">返回首選</button>
+        <!-- Landlord -->
+        <div id="view-landlord" class="hidden flex-col gap-6">
+            <div class="flex justify-between items-center"><h2 class="text-2xl font-bold text-blue-800">🏠 房東專區</h2><button onclick="showView('home')" class="text-sm underline text-blue-600">返回首頁</button></div>
+            
+            <div class="bg-blue-50 border p-4 rounded-lg text-xs">
+                <h3 class="font-bold text-blue-800 mb-2">房屋加入條件：</h3>
+                <ul class="space-y-1"><li>✓ 獨立門牌</li><li>✓ 合法建物 (有保存登記)</li><li>✓ 課徵住宅稅</li><li>✘ 不可有營業登記</li><li>✘ 不可是新青安貸款</li></ul>
             </div>
 
-            <!-- 房屋資格審核 -->
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-5 mb-2 shadow-sm">
-                <h3 class="text-lg font-bold text-blue-800 mb-3">房屋加入條件</h3>
-                <ul class="space-y-2 text-gray-700 text-sm">
-                    <li>✓ 獨立門牌</li>
-                    <li>✓ 合法建物 (有保存登記，不可是違章建築)</li>
-                    <li>✓ 課徵住宅稅</li>
-                    <li>✘ 不可有營業登記</li>
-                    <li>✘ 不可是新青安政策貸款</li>
-                </ul>
-            </div>
-
-            <!-- 所得稅 -->
-            <div class="bg-white border-2 border-blue-200 rounded-lg shadow-sm overflow-hidden">
-                <button class="w-full px-6 py-4 bg-blue-50 text-left font-bold text-blue-800 flex justify-between items-center" onclick="toggleAccordion(this)">
-                    租金所得稅試算 <span class="icon transform transition-transform">▼</span>
-                </button>
-                <div class="accordion-content p-4">
-                    <input type="number" id="tax-rent" class="w-full border p-2 mb-2" placeholder="每月租金">
-                    <select id="tax-bracket" class="w-full border p-2 mb-2"><option value="0.05">5%</option><option value="0.12">12%</option><option value="0.20">20%</option><option value="0.30">30%</option><option value="0.40">40%</option></select>
-                    <button onclick="calcIncomeTax()" class="w-full bg-blue-600 text-white p-2 font-bold">開始試算</button>
-                    <div id="res-income-tax" class="hidden mt-4 grid grid-cols-1 md:grid-cols-3 gap-2 text-center text-sm">
-                        <div class="p-2 border bg-gray-100 rounded">一般稅額: <span id="v1">0</span></div>
-                        <div class="p-2 border bg-blue-100 rounded">社宅稅額: <span id="v2">0</span></div>
-                        <div class="p-2 border bg-green-100 rounded">省下稅金: <span id="v3" class="font-bold">0</span></div>
+            <!-- 常駐試算區 -->
+            <div class="bg-white border rounded-lg p-6 shadow-sm space-y-8">
+                <div>
+                    <h3 class="font-bold text-blue-800 border-b pb-2 mb-4">租金所得稅試算</h3>
+                    <input id="tax-rent" type="number" class="w-full border p-2 mb-2 rounded" placeholder="每月租金">
+                    <select id="tax-bracket" class="w-full border p-2 mb-2 rounded"><option value="0.05">5%</option><option value="0.12">12%</option><option value="0.20">20%</option></select>
+                    <button onclick="calcTax()" class="w-full bg-blue-600 text-white p-2 rounded">計算所得稅</button>
+                    <div id="tax-res" class="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
+                        <div class="p-2 bg-gray-100 rounded">一般:<div id="res-gen" class="font-bold">0</div></div>
+                        <div class="p-2 bg-blue-100 rounded">社宅:<div id="res-soc" class="font-bold">0</div></div>
+                        <div class="p-2 bg-green-100 rounded">省下:<div id="res-save" class="font-bold text-green-700">0</div></div>
                     </div>
+                    <p class="text-[10px] text-gray-500 mt-2 text-center">* 以上結果僅供試算，實際依照相關單位計算為主</p>
                 </div>
-            </div>
 
-            <!-- 房屋稅 & 地價稅 -->
-            <div class="bg-white border-2 border-blue-200 rounded-lg shadow-sm overflow-hidden">
-                <button class="w-full px-6 py-4 bg-blue-50 text-left font-bold text-blue-800 flex justify-between items-center" onclick="toggleAccordion(this)">
-                    房屋稅 & 地價稅試算 <span class="icon transform transition-transform">▼</span>
-                </button>
-                <div class="accordion-content p-4 space-y-4">
-                    <div>
-                        <p class="font-bold mb-1 text-sm">房屋稅</p>
-                        <input type="number" id="h-val" class="w-full border p-2 mb-1" placeholder="房屋現值">
-                        <select id="h-rate" class="w-full border p-2 mb-2">
-                            <option value="0.032">1-2間非自住(3.2%)</option><option value="0.038">3-4間(3.8%)</option>
-                            <option value="0.042">5-6間(4.2%)</option><option value="0.048">7間以上(4.8%)</option>
-                        </select>
-                        <button onclick="calcHouseTax()" class="w-full bg-blue-600 text-white p-2 text-sm font-bold">試算房屋稅</button>
-                        <div id="res-house" class="hidden mt-4 grid grid-cols-1 md:grid-cols-3 gap-2 text-center text-sm"></div>
-                    </div>
-                    <hr>
-                    <div>
-                        <p class="font-bold mb-1 text-sm">地價稅</p>
-                        <input type="number" id="l-val" class="w-full border p-2 mb-2" placeholder="土地現值">
-                        <button onclick="calcLandTax()" class="w-full bg-blue-600 text-white p-2 text-sm font-bold">試算地價稅</button>
-                        <div id="res-land" class="hidden mt-4 grid grid-cols-1 md:grid-cols-3 gap-2 text-center text-sm"></div>
-                    </div>
+                <div>
+                    <h3 class="font-bold text-blue-800 border-b pb-2 mb-4">房屋稅/地價稅試算</h3>
+                    <input id="h-val" type="number" class="w-full border p-2 mb-2 rounded" placeholder="房屋現值">
+                    <select id="h-rate" class="w-full border p-2 mb-2 rounded"><option value="0.032">1-2間(3.2%)</option><option value="0.038">3-4間(3.8%)</option><option value="0.048">7間以上(4.8%)</option></select>
+                    <button onclick="calcHouse()" class="w-full bg-blue-600 text-white p-2 rounded mb-2">試算房屋稅</button>
+                    <div id="res-house" class="grid grid-cols-3 gap-2 text-center text-xs mb-4"></div>
+                    <input id="l-val" type="number" class="w-full border p-2 mb-2 rounded" placeholder="土地現值">
+                    <button onclick="calcLand()" class="w-full bg-blue-600 text-white p-2 rounded">試算地價稅</button>
+                    <div id="res-land" class="grid grid-cols-3 gap-2 text-center text-xs mt-2"></div>
+                    <p class="text-[10px] text-gray-500 mt-2 text-center">* 以上結果僅供試算，實際依照相關單位計算為主</p>
                 </div>
-            </div>
 
-            <!-- 租金試算 -->
-            <div class="bg-white border-2 border-blue-200 rounded-lg shadow-sm overflow-hidden mb-4">
-                <button class="w-full px-6 py-4 bg-blue-50 text-left font-bold text-blue-800 flex justify-between items-center" onclick="toggleAccordion(this)">
-                    社會住宅租金試算 <span class="icon transform transition-transform">▼</span>
-                </button>
-                <div class="accordion-content p-4">
-                    <select id="rent-area" class="w-full border p-2 mb-2"></select>
-                    <select id="rent-age" class="w-full border p-2 mb-2"></select>
-                    <input type="number" id="rent-ping" class="w-full border p-2 mb-2" placeholder="權狀坪數">
-                    <div class="grid grid-cols-2 gap-2 text-xs mb-2">
+                <div>
+                    <h3 class="font-bold text-blue-800 border-b pb-2 mb-4">社會住宅租金試算</h3>
+                    <select id="rent-area" class="w-full border p-2 mb-2 rounded"></select>
+                    <select id="rent-age" class="w-full border p-2 mb-2 rounded"></select>
+                    <input id="rent-ping" type="number" class="w-full border p-2 mb-2 rounded" placeholder="權狀坪數">
+                    <div class="grid grid-cols-2 text-xs mb-4 gap-1">
                         <label><input type="checkbox" name="equip" value="500"> 冷氣</label><label><input type="checkbox" name="equip" value="500"> 冰箱</label>
                         <label><input type="checkbox" name="equip" value="500"> 電視</label><label><input type="checkbox" name="equip" value="500"> 洗衣機</label>
                         <label><input type="checkbox" name="equip" value="500"> 網路</label><label><input type="checkbox" name="equip" value="500"> 第四台</label>
                     </div>
-                    <button onclick="calculateRent()" class="w-full bg-blue-600 text-white p-2 font-bold">試算最高租金</button>
-                    <div id="rent-result-area" class="hidden mt-4 p-4 text-center">
-                        <div id="res-rent-val" class="text-2xl font-bold">0 元</div>
-                    </div>
+                    <button onclick="calcRent()" class="w-full bg-blue-600 text-white p-2 rounded">試算最高租金</button>
+                    <div id="res-rent" class="mt-4 text-center text-xl font-bold text-blue-600"></div>
+                    <p class="text-[10px] text-gray-500 mt-2 text-center">* 以上結果僅供試算，實際依照相關單位計算為主</p>
                 </div>
             </div>
-            <div id="landlord-faq-container" class="space-y-3"></div>
+
+            <h3 class="font-bold text-gray-700 mt-4">常見問答</h3>
+            <div id="land-faq" class="space-y-2"></div>
         </div>
 
-        <!-- 房客專區 -->
-        <div id="view-tenant" class="hidden flex-col gap-4 transition-all duration-300">
-            <h2 class="text-2xl font-bold text-emerald-800">🔑 房客專區</h2>
-            <button onclick="showView('home')" class="text-gray-500 underline text-sm">返回首頁</button>
-            
-            <div class="bg-emerald-50 p-4 rounded-lg border border-emerald-200">
-                <label class="block font-bold mb-2">租金特別扣除額試算</label>
-                <input type="number" id="deduct-rent" class="w-full border p-2 mb-2" placeholder="每月租金">
-                <input type="number" id="deduct-days" class="w-full border p-2 mb-2" placeholder="年度實際租屋天數 (例如:365)">
-                <select id="deduct-bracket" class="w-full border p-2 mb-2"><option value="0.05">5%</option><option value="0.12">12%</option><option value="0.20">20%以上(不適用)</option></select>
-                <button onclick="calcDeduct()" class="w-full bg-emerald-600 text-white p-2 font-bold">開始試算</button>
-                <div id="res-deduct" class="mt-2 font-bold text-emerald-800 hidden"></div>
-            </div>
-
-            <button onclick="handleExternalLink('https://pip.moi.gov.tw/Publicize/Info/B1021')" class="w-full bg-emerald-600 text-white py-3 rounded-lg font-bold">前往租金補貼試算</button>
-            <div id="tenant-faq-container" class="space-y-3"></div>
+        <!-- View Tenant -->
+        <div id="view-tenant" class="hidden flex-col gap-4">
+            <div class="flex justify-between items-center"><h2 class="text-2xl font-bold text-emerald-800">🔑 房客專區</h2><button onclick="showView('home')" class="text-sm underline">返回首頁</button></div>
+            <div class="bg-emerald-50 p-4 border rounded-lg"><label class="font-bold text-sm">租金特別扣除額</label><input id="d-rent" type="number" class="w-full border p-2 mb-2 rounded" placeholder="月租金"><input id="d-start" type="date" class="w-full border p-2 mb-2 rounded"><input id="d-end" type="date" class="w-full border p-2 mb-2 rounded"><select id="d-brac" class="w-full border p-2 mb-2 rounded"><option value="0.05">5%</option><option value="0.12">12%</option></select><button onclick="calcDeduct()" class="w-full bg-emerald-600 text-white p-2 rounded">開始試算</button><div id="res-d" class="mt-2 font-bold text-center text-emerald-800"></div><p class="text-[10px] text-gray-500 mt-2 text-center">* 以上結果僅供試算，實際依照相關單位計算為主</p></div>
+            <button onclick="window.open('https://pip.moi.gov.tw/Publicize/Info/B1021')" class="w-full bg-emerald-600 text-white py-3 rounded-lg font-bold">前往租金補貼試算</button>
+            <h3 class="font-bold">常見問答</h3>
+            <div id="ten-faq" class="space-y-2"></div>
         </div>
 
-        <div id="exception-area" class="hidden mt-8 p-4 bg-orange-50 border-l-4 border-orange-400 rounded text-center">
-            <p class="font-bold text-orange-800">如果有其他問題，請洽詢真人客服</p>
-        </div>
+        <div id="ex-area" class="hidden mt-8 p-4 bg-orange-50 border-l-4 border-orange-400 text-center font-bold text-orange-800">如果有其他問題，請洽詢真人客服</div>
     </main>
-
-    <footer class="bg-gray-800 text-white py-6 text-center text-sm mt-auto">
-        <p>總管家包租代管 | 0919821208</p>
-        <p>台中市大里區國光路500號八樓之2</p>
-    </footer>
 
     <script>
         const areas = ["西屯區","北屯區","南屯區","北區","西區","中區","東區","南區","烏日區","大里區","潭子區","大雅區","太平區","沙鹿區","后里區","大肚區","神岡區","豐原區","梧棲區","龍井區","大甲區","外埔區","石岡區","霧峰區","清水區","新社區","東勢區","其它"];
         const ages = ["0–4", "5–9", "10–14", "15–19", "20–24", "25–29", "30–34", "35–39", "40+"];
-        
         areas.forEach(a => document.getElementById('rent-area').innerHTML += `<option value="${a}">${a}</option>`);
         ages.forEach(a => document.getElementById('rent-age').innerHTML += `<option value="${a}">${a}年</option>`);
 
-        function showView(v) { ['home','landlord','tenant'].forEach(id => document.getElementById('view-'+id).classList.add('hidden')); document.getElementById('view-'+v).classList.remove('hidden'); document.getElementById('exception-area').classList.toggle('hidden', v === 'home'); }
-        function toggleAccordion(b) { b.nextElementSibling.classList.toggle('active'); b.querySelector('.icon').classList.toggle('rotate-180'); }
-        function handleExternalLink(u) { window.open(u, '_blank'); }
-
-        function calcIncomeTax() {
+        function showView(v) { document.getElementById('view-home').classList.toggle('hidden', v !== 'home'); document.getElementById('view-landlord').classList.toggle('hidden', v !== 'landlord'); document.getElementById('view-tenant').classList.toggle('hidden', v !== 'tenant'); document.getElementById('ex-area').classList.toggle('hidden', v === 'home'); }
+        function toggle(b) { b.nextElementSibling.classList.toggle('active'); }
+        
+        function calcTax() {
             const r = parseInt(document.getElementById('tax-rent').value) || 0;
             const b = parseFloat(document.getElementById('tax-bracket').value);
-            const gen = r * 12 * (1 - 0.43) * b;
-            const soc = r > 15000 ? (r - 15000) * 12 * (1 - 0.6) * b : 0;
-            document.getElementById('v1').textContent = Math.round(gen).toLocaleString();
-            document.getElementById('v2').textContent = Math.round(soc).toLocaleString();
-            document.getElementById('v3').textContent = Math.round(gen - soc).toLocaleString();
-            document.getElementById('res-income-tax').classList.remove('hidden');
+            const gen = r * 12 * (1 - 0.43) * b, soc = r > 15000 ? (r - 15000) * 12 * (1 - 0.6) * b : 0;
+            document.getElementById('res-gen').textContent = Math.round(gen).toLocaleString();
+            document.getElementById('res-soc').textContent = Math.round(soc).toLocaleString();
+            document.getElementById('res-save').textContent = Math.round(gen - soc).toLocaleString();
         }
-
-        function calcHouseTax() {
-            const val = parseInt(document.getElementById('h-val').value) || 0;
-            const rate = parseFloat(document.getElementById('h-rate').value);
-            const soc = val * 0.012;
-            const non = val * rate;
-            document.getElementById('res-house').innerHTML = `<div class="p-2 border bg-gray-100 rounded">自住:${Math.round(soc)}</div><div class="p-2 border bg-blue-100 rounded">非自住:${Math.round(non)}</div><div class="p-2 border bg-green-100 rounded">差額:${Math.round(non-soc)}</div>`;
-            document.getElementById('res-house').classList.remove('hidden');
+        function calcHouse() {
+            const v = parseInt(document.getElementById('h-val').value) || 0, r = parseFloat(document.getElementById('h-rate').value);
+            document.getElementById('res-house').innerHTML = `<div class="p-2 bg-gray-100 rounded">自住:${Math.round(v*0.012)}</div><div class="p-2 bg-blue-100 rounded">非自住:${Math.round(v*r)}</div><div class="p-2 bg-green-100 rounded">差額:${Math.round(v*r-v*0.012)}</div>`;
         }
-
-        function calcLandTax() {
-            const val = parseInt(document.getElementById('l-val').value) || 0;
-            const soc = val * 0.002;
-            const non = val * 0.01;
-            document.getElementById('res-land').innerHTML = `<div class="p-2 border bg-gray-100 rounded">自住:${Math.round(soc)}</div><div class="p-2 border bg-blue-100 rounded">非自住:${Math.round(non)}</div><div class="p-2 border bg-green-100 rounded">差額:${Math.round(non-soc)}</div>`;
-            document.getElementById('res-land').classList.remove('hidden');
+        function calcLand() {
+            const v = parseInt(document.getElementById('l-val').value) || 0;
+            document.getElementById('res-land').innerHTML = `<div class="p-2 bg-gray-100 rounded">自住:${Math.round(v*0.002)}</div><div class="p-2 bg-blue-100 rounded">非自住:${Math.round(v*0.01)}</div><div class="p-2 bg-green-100 rounded">差額:${Math.round(v*0.01-v*0.002)}</div>`;
         }
-
         function calcDeduct() {
-            const rent = parseInt(document.getElementById('deduct-rent').value) || 0;
-            const days = parseInt(document.getElementById('deduct-days').value) || 365;
-            const b = parseFloat(document.getElementById('deduct-bracket').value);
-            if(b > 0.12) { document.getElementById('res-deduct').textContent = "級距超過12%，不適用"; }
-            else { const ded = Math.min(rent * 12, 180000) * (days/365) * b; document.getElementById('res-deduct').textContent = "可抵扣稅額: " + Math.round(ded) + " 元"; }
-            document.getElementById('res-deduct').classList.remove('hidden');
+            const r = parseInt(document.getElementById('d-rent').value) || 0, s = new Date(document.getElementById('d-start').value), e = new Date(document.getElementById('d-end').value), b = parseFloat(document.getElementById('d-brac').value);
+            const d = Math.floor((e - s) / 86400000) + 1, y = s.getFullYear(), td = ((y % 4 === 0) ? 366 : 365);
+            document.getElementById('res-d').textContent = b > 0.12 ? "超過12%不適用" : "可抵扣: " + Math.round(Math.min(r * 12, 180000) * (d / td) * b) + " 元";
+        }
+        function calcRent() {
+            const ping = parseFloat(document.getElementById('rent-ping').value) || 0, isS = ping <= 15, eq = document.querySelectorAll('input[name="equip"]:checked').length * 500, tot = (ping * 800) + Math.min(eq, isS ? 1000 : 2000);
+            const res = document.getElementById('res-rent'); res.textContent = tot > 35000 ? "不符合資格" : Math.round(tot) + " 元"; res.className = tot > 35000 ? "mt-4 text-center text-xl font-bold text-red-600" : "mt-4 text-center text-xl font-bold text-blue-600";
         }
 
-        function calculateRent() {
-            const ping = parseFloat(document.getElementById('rent-ping').value) || 0;
-            const isSuite = ping <= 15;
-            const area = document.getElementById('rent-area').value;
-            const ageIdx = ages.indexOf(document.getElementById('rent-age').value);
-            const eq = document.querySelectorAll('input[name="equip"]:checked').length * 500;
-            const bonus = Math.min(eq, isSuite ? 1000 : 2000);
-            const unit = (isSuite ? 800 : 700); // 簡化查表邏輯，實際依據您的區間表
-            const total = (ping * unit) + bonus;
-            const res = document.getElementById('res-rent-val');
-            document.getElementById('rent-result-area').classList.remove('hidden');
-            res.textContent = total > 35000 ? "不符合資格" : Math.round(total) + " 元";
-            res.className = total > 35000 ? "text-2xl font-bold text-red-600" : "text-2xl font-bold text-blue-600";
-        }
-
-        const landlordData = [
-            { q: "加入計畫的「3稅減免」是什麼？", a: "每月租金1.5萬內免所得稅，超過可扣除60%費用。房屋與地價稅比照自用住宅稅率！" },
-            { q: "除了省稅，聽說還有補助可以拿？", a: "是的，政府提供最高1萬元的修繕補助、公證費補助及居家安全保險補助。" },
-            { q: "把房子交給總管家代管，我要付服務費嗎？", a: "不用！服務費由政府全額補助，三年期間完全免費。" },
-            { q: "請問我的房子符合資格嗎？", a: "只要是合法住宅、有權狀、非公家宿舍且無租賃糾紛，原則上皆可加入。" },
-            { q: "加入的話，一定要附全套家具嗎？", a: "空屋即可，若有基本家電（冷氣/熱水器）將更有助於提升出租效益。" }
-        ];
-        document.getElementById('landlord-faq-container').innerHTML = landlordData.map((item, i) => `<div class="bg-white border p-4 rounded"><h4 class="font-bold">Q${i+1}: ${item.q}</h4><p class="text-sm text-gray-600">${item.a}</p></div>`).join('');
-
-        const tenantData = [
-            { q: "誰可以申請？", a: "申請人及家庭成員在台中、彰化、南投均無自有住宅，且符合所得標準即可。" },
-            { q: "可以把戶籍遷進來嗎？", a: "可以，政府規定社宅皆可讓房客遷入戶籍。" },
-            { q: "可以申請租金補貼嗎？", a: "可以，我們會協助您一起申請行政院300億租金補貼。" },
-            { q: "收入有沒有超標？", a: "以家庭年收入除以人數與12個月計算，找專員幫您試算最快。" },
-            { q: "外縣市工作或讀書可以申請嗎？", a: "可以，提供工作或就學證明即可。" }
-        ];
-        document.getElementById('tenant-faq-container').innerHTML = tenantData.map((item, i) => `<div class="bg-white border p-4 rounded"><h4 class="font-bold">Q${i+1}: ${item.q}</h4><p class="text-sm text-gray-600">${item.a}</p></div>`).join('');
+        const lFaq = [{q:"3稅減免",a:"租金1.5萬內免所得稅。"},{q:"補助",a:"修繕、公證、保險補助。"},{q:"服務費",a:"政府全額補助。"},{q:"資格",a:"合法建物無糾紛。"},{q:"家具",a:"空屋即可。"}];
+        const tFaq = [{q:"誰可申請?",a:"滿18歲，中彰投無房。"},{q:"戶籍",a:"皆可遷入。"},{q:"租金補貼",a:"可申請行政院300億補貼。"},{q:"收入",a:"平均不超5-6萬。"},{q:"外縣市",a:"提供證明即可。"}];
+        document.getElementById('land-faq').innerHTML = lFaq.map((item,i) => `<div class="bg-white border rounded"><button class="w-full p-3 text-left font-bold" onclick="toggle(this)">Q${i+1}: ${item.q} <span>▼</span></button><div class="accordion-content p-3 text-sm">${item.a}</div></div>`).join('');
+        document.getElementById('ten-faq').innerHTML = tFaq.map((item,i) => `<div class="bg-white border rounded"><button class="w-full p-3 text-left font-bold" onclick="toggle(this)">Q${i+1}: ${item.q} <span>▼</span></button><div class="accordion-content p-3 text-sm">${item.a}</div></div>`).join('');
     </script>
 </body>
 </html>
